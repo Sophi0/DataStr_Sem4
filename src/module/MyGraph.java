@@ -44,7 +44,75 @@ public class MyGraph<T> {
 	}
 	
 	//addVertice
+	public void addVertice(T inputElement) throws Exception {
+		if(inputElement == null) {
+			throw (new Exception("It is not real vertice!"));
+		}
+		
+		//verify if vertice is not already in graph
+		/*for(int i = 0; i < elementCounter; i++) {
+			if(graphElements[i].getElement().equals(inputElement)) {
+				throw (new Exception("Vertice is already in graph"));
+			}
+		}*/
+		
+		if(searchVertice(inputElement) >= 1) {
+			throw (new Exception("Vertice is already in graph"));
+		}
+		
+		if(isFull()) {
+			increaseArray();
+		}
+		
+		MyVerticeNode newVertice = new MyVerticeNode<T>(inputElement);
+		graphElements[elementCounter] = newVertice;
+		elementCounter++;
+		
+		//for optimization
+		//graphElements[elementCounter++] = new MyVerticeNode<T>(inputElement);
+	}
+	
+	
 	//addEdge
+	public void addEdge(T elementFrom, T elementTo, float edgeWeigth) throws Exception {
+		if(elementFrom == null || elementTo == null || edgeWeigth <= 0) {
+			throw (new Exception("Incorrect arguments"));
+		}
+		int indexOfElementFrom = searchVertice(elementFrom);
+		int indexOfElementTo = searchVertice(elementTo);
+		
+		//TODO add vertices if it is not found in graph
+		if(indexOfElementFrom < 0 || indexOfElementTo < 0) {
+			throw (new Exception("One or both vertices are not in graph"));
+		}
+		
+		MyEdgeNode newNode = new MyEdgeNode(indexOfElementTo, edgeWeigth);
+		//if it is at first edge
+		if(graphElements[indexOfElementFrom].getFirstEdge() == null) {
+			graphElements[indexOfElementFrom].setFirstEdge(newNode);
+		}
+		else {
+			MyEdgeNode temp = graphElements[indexOfElementFrom].getFirstEdge();
+			
+			while(temp.getNext() != null) {
+				temp = temp.getNext();
+			}
+			temp.setNext(newNode);
+		}
+	}
+	
+	private int searchVertice(T inputElement) {
+		//return index of element
+		for(int i = 0; i < elementCounter; i++) {
+			if(graphElements[i].getElement().equals(inputElement)) {
+				return i;
+			}
+		}
+		//return -1 if element is not there
+		return -1;
+	}
+	
+	
 	//print
 	//makeEmpty
 	

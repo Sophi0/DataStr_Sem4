@@ -15,7 +15,7 @@ public class MyEdgeNode{
 			indexOfVertice = inputIndexOfVertice;
 		}
 		else {
-			indexOfVertice = 0;
+			indexOfVertice = -1;
 		}
 	}
 	public float getWeigth() {

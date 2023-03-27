@@ -33,4 +33,24 @@ public class MyGraph<T> {
 		return elementCounter;
 	}
 	
+	private void increaseArray() {
+		int newArraySize = (arraySize > 100) ? (int)(arraySize * 1.5) : arraySize * 2;
+		MyVerticeNode[] newElements = new MyVerticeNode[newArraySize];
+		for(int i = 0; i < elementCounter; i++) {
+			newElements[i] = graphElements[i];
+		}
+		graphElements = newElements;
+		arraySize = newArraySize;
+	}
+	
+	//addVertice
+	//addEdge
+	//print
+	//makeEmpty
+	
+	//TODO
+	//removeVertice
+	//removeEdge
+	//changeEdge
+			
 }

@@ -26,7 +26,6 @@ public class MyVerticeNode <T>{
 		this.firstEdge = firstEdge;
 	}
 	
-	//TODO constructors and toString
 	
 	public MyVerticeNode(T element) {
 		setElement(element);

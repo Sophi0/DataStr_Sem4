@@ -18,9 +18,7 @@ public class MyGraph<T> {
 		}
 		graphElements = new MyVerticeNode[arraySize];
 	}
-	
-	//TODO isFull, isEmpty, howManyElements, increaseArray
-	
+		
 	public boolean isFull() {
 		return (elementCounter == arraySize);
 	}
@@ -114,6 +112,27 @@ public class MyGraph<T> {
 	
 	
 	//print
+	public void print() throws Exception {
+		//1.if verification if it is isEmpty
+		if(isEmpty()) {
+			throw (new Exception("Graph is empty"));
+		}
+		//2.for loop for vertices and print each vertice
+		for(int i = 0; i < elementCounter; i++) {
+			System.out.println(graphElements[i].getElement() + " -->");
+		//2.1.while loop for edges and print each edge of the specific vertice	
+			MyEdgeNode tempEdgeNode = graphElements[i].getFirstEdge();
+			
+			while(tempEdgeNode != null) {
+				T verticeTo = (T) graphElements[tempEdgeNode.getIndexOfVertice()].getElement();
+				System.out.println(verticeTo + "( " + tempEdgeNode.getWeigth() + " km");
+				tempEdgeNode = tempEdgeNode.getNext();
+			}
+			System.out.println();
+		}
+
+		
+	}
 	//makeEmpty
 	
 	//TODO

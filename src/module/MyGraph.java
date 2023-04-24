@@ -119,13 +119,13 @@ public class MyGraph<T> {
 		}
 		//2.for loop for vertices and print each vertice
 		for(int i = 0; i < elementCounter; i++) {
-			System.out.println(graphElements[i].getElement() + " -->");
+			System.out.print(graphElements[i].getElement() + " --> ");
 		//2.1.while loop for edges and print each edge of the specific vertice	
 			MyEdgeNode tempEdgeNode = graphElements[i].getFirstEdge();
 			
 			while(tempEdgeNode != null) {
 				T verticeTo = (T) graphElements[tempEdgeNode.getIndexOfVertice()].getElement();
-				System.out.println(verticeTo + "( " + tempEdgeNode.getWeigth() + " km");
+				System.out.print(verticeTo + " (" + tempEdgeNode.getWeigth()  + " km); ");
 				tempEdgeNode = tempEdgeNode.getNext();
 			}
 			System.out.println();

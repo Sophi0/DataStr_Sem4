@@ -144,7 +144,10 @@ public class MyGraph<T> {
 	
 	//TODO
 	//removeVertice
+	//updateVertice
 	//removeEdge
+	//updateEdgeWeigth
+	//updateEdgeByItsVertices
 	//changeEdge
 			
 }

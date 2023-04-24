@@ -133,7 +133,14 @@ public class MyGraph<T> {
 
 		
 	}
+	
 	//makeEmpty
+	public void makeEmpty() {
+		elementCounter = 0;
+		arraySize = DEFAULT_ARRAY_SIZE;
+		graphElements = new MyVerticeNode[arraySize];
+		System.gc();
+	}
 	
 	//TODO
 	//removeVertice

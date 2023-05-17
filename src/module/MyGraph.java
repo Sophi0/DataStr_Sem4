@@ -1,6 +1,7 @@
 package module;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class MyGraph<T> {
@@ -381,11 +382,58 @@ public class MyGraph<T> {
 	    throw new Exception("Edge does not exist");
 	}
 	            
-		
+	//depth	
 	public void depthFirstSearch(T startElement, T endElement) throws Exception {
 	    if (startElement == null || endElement == null) {
 	        throw new Exception("Invalid input");
 	    }
+	    int startIndex = searchVertice(startElement);
+	    int endIndex = searchVertice(endElement);
+	    
+	    if (startIndex < 0 || endIndex < 0) {
+	        throw new Exception("One or both vertices are not in graph");
+	    }
+	    //create an array to store the visited vertices
+	    boolean[] visited = new boolean[elementCounter];
+	    //call a helper method with the start vertice index, end and the visited array
+	    dfsHelper(startIndex, endIndex, visited);
+	    //print a message if the dfs function does not find path between start and end
+	    System.out.println("Path not found");
+	}
+	
+	//create recursive helper method that performs dfs traversal,
+	//which takes in the current vertice index, 
+	//end vertice index and visited array
+	private void dfsHelper(int current, int endIndex, boolean[] visited) {
+	//set the current vertice as visited
+	    visited[current] = true;
+	    if (current == endIndex) {
+	        System.out.println("Path found");
+	        return;
+	    }
+	  //get the first edge of the current vertice
+	    MyEdgeNode temp = graphElements[current].getFirstEdge();
+	    while (temp != null) {
+	        int neighborIndex = temp.getIndexOfVertice();
+	        //call dfs function for each unvisited neighbor vertice
+	        if (!visited[neighborIndex]) {
+	            dfsHelper(neighborIndex, endIndex, visited);
+	        }
+	        //go to the next edge
+	        temp = temp.getNext();
+	    }
+	}
+	
+	/*
+	 * https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+	 */
+	
+	//width
+	public void breadthFirstSearch(T startElement, T endElement) throws Exception {
+	    if (startElement == null || endElement == null) {
+	        throw new Exception("Invalid input");
+	    }
+	    
 	    int startIndex = searchVertice(startElement);
 	    int endIndex = searchVertice(endElement);
 	    
@@ -423,6 +471,59 @@ public class MyGraph<T> {
 	}
 	
 	/*
-	 * https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+	 * https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
+	 */
+	
+	
+	public MyGraph<T> minimumSpanningTree() throws Exception {
+		if (isEmpty()) {
+			throw new Exception("Graph is empty");
+		}
+
+		MyGraph<T> mst = new MyGraph<T>(elementCounter);
+
+		// Initialize the visited array and the priority queue
+		boolean[] visited = new boolean[elementCounter];
+		PriorityQueue<MyEdgeNode> pq = new PriorityQueue<MyEdgeNode>();
+
+		// Start with the first vertice
+		visited[0] = true;
+		MyVerticeNode<T> currentVertice = graphElements[0];
+
+		// Add all edges of the first vertice to the priority queue
+		MyEdgeNode currentEdge = currentVertice.getFirstEdge();
+		while (currentEdge != null) {
+			pq.add(currentEdge);
+			currentEdge = currentEdge.getNext();
+		}
+
+		// Loop until all vertices are visited
+		while (mst.howManyElements() < elementCounter) {
+			// Get the edge with the smallest weight from the priority queue
+			MyEdgeNode minEdge = pq.poll();
+			int indexOfMinVertice = minEdge.getIndexOfVertice();
+
+			// If the vertice of the minEdge is not visited, add it to the MST
+			if (!visited[indexOfMinVertice]) {
+				T minVerticeElement = (T) graphElements[indexOfMinVertice].getElement();
+				mst.addVertice(minVerticeElement);
+				mst.addEdge(currentVertice.getElement(), minVerticeElement, minEdge.getWeigth());
+
+				// Mark the vertice as visited and add its edges to the priority queue
+				visited[indexOfMinVertice] = true;
+				currentVertice = graphElements[indexOfMinVertice];
+				currentEdge = currentVertice.getFirstEdge();
+				while (currentEdge != null) {
+					pq.add(currentEdge);
+					currentEdge = currentEdge.getNext();
+				}
+			}
+		}
+
+		return mst;
+	}
+
+	/*
+	 * https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/
 	 */
 }

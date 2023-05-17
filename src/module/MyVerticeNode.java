@@ -1,5 +1,8 @@
 package module;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class MyVerticeNode <T>{
 	private T element;
 	private MyEdgeNode firstEdge = null;

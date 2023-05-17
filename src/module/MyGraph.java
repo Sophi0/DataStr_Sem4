@@ -1,5 +1,8 @@
 package module;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class MyGraph<T> {
 	private MyVerticeNode[] graphElements;
 	private final int DEFAULT_ARRAY_SIZE = 10;
@@ -94,27 +97,26 @@ public class MyGraph<T> {
 		}
 		*/
 	    
-		/*
-		 * This code checks if the edge already exists by iterating through the edges 
-		 * of the elementFrom vertex and comparing the verticeIndex of each edge with 
-		 * the index of the elementTo vertex. If a matching edge is found, an exception is thrown.
-		 */
+		//check if an edge already exists between elementFrom and elementTo
+	    //if exists, throw exception
 		MyEdgeNode object = graphElements[indexOfElementFrom].getFirstEdge();
 	    while (object != null) {
 	        if (object.getIndexOfVertice() == indexOfElementTo) {
 	            throw new Exception("Edge already exists");
 	        }
+	    //will move to the next
 	        object = object.getNext();
 	    }
 	    
 		MyEdgeNode newNode = new MyEdgeNode(indexOfElementTo, edgeWeigth);
-		//if it is at first edge
+		//add new edge to the list for elementFrom
 		if(graphElements[indexOfElementFrom].getFirstEdge() == null) {
+		//if elementFrom does not have any edges, it sets the new edge at the first edge
 			graphElements[indexOfElementFrom].setFirstEdge(newNode);
 		}
 		else {
+		//iterates through the edges of elementFrom and adds the new edge 
 			MyEdgeNode temp = graphElements[indexOfElementFrom].getFirstEdge();
-			
 			while(temp.getNext() != null) {
 				temp = temp.getNext();
 			}
@@ -171,17 +173,16 @@ public class MyGraph<T> {
 		if (inputElement == null) {
 			throw (new Exception("It is not a real vertice")); 
 		}
-		// find the index of the vertice to be removed
+		//find the index of the vertice to be removed
 		int indexToRemove = searchVertice(inputElement);
 
 		if (indexToRemove < 0) {
 			throw (new Exception("Vertice is not in graph")); 
 		}
-		// remove all edges that connect to the vertice to be removed
+		//remove all edges that connect to the vertice to be removed
 		for (int i = 0; i < elementCounter; i++) {
 			MyEdgeNode temp = graphElements[i].getFirstEdge();
 			MyEdgeNode prev = null;
-
 			while (temp != null) {
 				if (temp.getIndexOfVertice() == indexToRemove) {
 					if (prev == null) {
@@ -194,14 +195,15 @@ public class MyGraph<T> {
 				temp = temp.getNext();
 			}
 		}
-		// remove the vertice
+		//remove the vertice
 		graphElements[indexToRemove] = null;
 		elementCounter--;
 
-		// shift all elements after the removed vertice to the left
+		//shift all elements after the removed vertice to the left
 		for (int i = indexToRemove; i < elementCounter; i++) {
 			graphElements[i] = graphElements[i+1];
 		}
+		//set null to remove the duplicate element copied from the previous index
 		graphElements[elementCounter] = null;
 	}
 	 
@@ -222,22 +224,30 @@ public class MyGraph<T> {
 	    if (elementFrom == null || elementTo == null) {
 	        throw new Exception("Invalid input");
 	    }
+	    //find the indexes of the vertices that the edge connects
 	    int indexFrom = searchVertice(elementFrom);
 	    int indexTo = searchVertice(elementTo);
 	    
 	    if (indexFrom < 0 || indexTo < 0) {
 	        throw new Exception("One or both vertices are not in graph");
 	    }
+	    
 	    MyEdgeNode temp = graphElements[indexFrom].getFirstEdge();
 	    MyEdgeNode prev = null;
-	    
+	    //in while loop checks if any of the edges connect to the vertice elementTo
 	    while (temp != null) {
+	    //if an edge is found that connects elementFrom and elementTo, it is removed
+	    //by setting the pointer of the previous edge to the next pointer of the current edge
 	        if (temp.getIndexOfVertice() == indexTo) {
 	            if (prev == null) {
 	                graphElements[indexFrom].setFirstEdge(temp.getNext());
-	            } else {
+	            } 
+	    //if the edge to be removed is the first edge of the vertice, the vertice pointer 
+	    //firstEdge should be set to the next pointer of the current edge       
+	            else {
 	                prev.setNext(temp.getNext());
 	            }
+	    //stop the method
 	            return;
 	        }
 	        prev = temp;
@@ -277,22 +287,28 @@ public class MyGraph<T> {
 	    if (elementFrom == null || oldElementTo == null || newElementTo == null) {
 	        throw new Exception("Invalid input");
 	    }
+	    //find the index of the vertice that the edge starts from
 	    int indexFrom = searchVertice(elementFrom);
+	    //find the index of the vertice that the edge currently points to
 	    int oldIndexTo = searchVertice(oldElementTo);
+	    //find the index of the vertice that the edge will be updated to point to
 	    int newIndexTo = searchVertice(newElementTo);
 	    
 	    if (indexFrom < 0 || oldIndexTo < 0 || newIndexTo < 0) {
 	        throw new Exception("One or more vertices are not in graph");
 	    }
 	    
+	    //create temp edge node variable to the first edge of the vertice that the edge starts from
 	    MyEdgeNode temp = graphElements[indexFrom].getFirstEdge();
-	    
 	    while (temp != null) {
 	        if (temp.getIndexOfVertice() == oldIndexTo) {
+	        	//check if there is already an edge that points from the indexFrom to the newIndexTo
 	            if (edgeExists(indexFrom, newIndexTo)) {
 	                throw new Exception("Edge already exists");
 	            }
+	            //update index of the vertice that the current edge points to
 	            temp.setIndexOfVertice(newIndexTo);
+	            //stop the method
 	            return;
 	        }
 	        temp = temp.getNext();
@@ -317,37 +333,96 @@ public class MyGraph<T> {
 	    if (oldElementFrom == null || elementTo == null || newElementFrom == null) {
 	        throw new Exception("Invalid input");
 	    }
+	    //find the index of the vertice that the edge currently starts from
 	    int oldIndexFrom = searchVertice(oldElementFrom);
+	    //find the index of the vertice that the edge points to
 	    int indexTo = searchVertice(elementTo);
+	    //find the index of the vertice that the edge will be updated to start from
 	    int newIndexFrom = searchVertice(newElementFrom);
 	    
 	    if (oldIndexFrom < 0 || indexTo < 0 || newIndexFrom < 0) {
 	        throw new Exception("One or more vertices are not in graph");
 	    }
-	    MyEdgeNode temp = graphElements[oldIndexFrom].getFirstEdge();
-	    MyEdgeNode prev = null;
 	    
+	    //create variable that the edge currently starts from
+	    MyEdgeNode temp = graphElements[oldIndexFrom].getFirstEdge();
+	    //create variable, which save info about prev edge node
+	    MyEdgeNode prev = null;
 	    while (temp != null) {
 	        if (temp.getIndexOfVertice() == indexTo) {
 	            if (edgeExists(newIndexFrom, indexTo)) {
 	                throw new Exception("Edge already exists");
 	            }
+	            //removes the current edge from the list of edges for the starting vertice
 	            if (prev == null) {
+	            //if current edge is the first edge, must call setFisrtEdge to set the first
+	            //edge to the next edge in the list
 	                graphElements[oldIndexFrom].setFirstEdge(temp.getNext());
 	            } 
 	            else {
+	            //setNext is called on the previous edge to set its next edge to the next edge
 	            	prev.setNext(temp.getNext());
 	            }
+	            //update index of the vertice that the current edge starts from
 	            temp.setIndexOfVertice(newIndexFrom);
+	            //set the next edge of the current edge to the first edge of the vertice
+	            //that the edge will be updated to start from
 	            temp.setNext(graphElements[newIndexFrom].getFirstEdge());
+	            //set the first edge of the vertice that the edge will be updated to start from
+	            //to the current edge
 	            graphElements[newIndexFrom].setFirstEdge(temp);
+	            //stop the method
 	            return;
 	        }
+	        //move to the next edge
 	        prev = temp;
 	        temp = temp.getNext();
 	    }
 	    throw new Exception("Edge does not exist");
 	}
 	            
-			
+		
+	public void depthFirstSearch(T startElement, T endElement) throws Exception {
+	    if (startElement == null || endElement == null) {
+	        throw new Exception("Invalid input");
+	    }
+	    int startIndex = searchVertice(startElement);
+	    int endIndex = searchVertice(endElement);
+	    
+	    if (startIndex < 0 || endIndex < 0) {
+	        throw new Exception("One or both vertices are not in graph");
+	    }
+	    //create a queue to store the vertices to be visited
+	    Queue<Integer> queue = new LinkedList<>();
+	    //create an array to store the visited vertices
+	    boolean[] visited = new boolean[elementCounter];
+	    //mark the starting vertex as visited and add it to the queue
+	    visited[startIndex] = true;
+	    queue.add(startIndex);
+	    //while the queue is not empty, visit the next vertex in the queue
+	    while (!queue.isEmpty()) {
+	        int currentVertex = queue.poll();
+	        //if the current vertex is the end vertex, stop the method
+	        if (currentVertex == endIndex) {
+	            return;
+	        }
+	        //iterate through the edges of the current vertex 
+	        //and add any unvisited vertices to the queue
+	        MyEdgeNode temp = graphElements[currentVertex].getFirstEdge();
+	        while (temp != null) {
+	            int nextVertex = temp.getIndexOfVertice();
+	            if (!visited[nextVertex]) {
+	                visited[nextVertex] = true;
+	                queue.add(nextVertex);
+	            }
+	            temp = temp.getNext();
+	        }
+	    }
+	    //if the end vertex was not found, throw an exception
+	    throw new Exception("End vertex not found");
+	}
+	
+	/*
+	 * https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+	 */
 }
